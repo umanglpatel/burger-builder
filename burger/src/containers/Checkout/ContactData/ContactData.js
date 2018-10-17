@@ -59,9 +59,9 @@ class ContactData extends Component {
                     ]
                 },
                 value: ''
-            },
-            loading: false
-        }
+            }
+        },
+        loading: false
     }
 
     orderHandler = (event) => {
@@ -72,7 +72,6 @@ class ContactData extends Component {
             price: this.props.price
         }
 
-
         axios.post('/orders.json', order)
             .then(response => {
                 this.setState({ loading: false });
@@ -81,6 +80,18 @@ class ContactData extends Component {
             .catch(error => {
                 this.setState({ loading: false });
             });
+    }
+
+    inputChangedhandler = (event, formElementId) => {
+        const updatedOrderForm = {
+            ...this.state.orderForm
+        };
+        const updatedElement = {
+            ...this.state.orderForm[formElementId]
+        };
+        updatedElement.value = event.target.value;
+        updatedOrderForm[formElementId] = updatedElement;
+        this.setState({ orderForm: updatedOrderForm });
     }
 
     render() {
@@ -99,11 +110,13 @@ class ContactData extends Component {
                         key={formElement.id}
                         elementType={formElement.config.elementType}
                         elementConfig={formElement.config.elementConfig}
-                        value={formElement.config.value}></Input>
-                ))}
+                        value={formElement.config.value}
+                        changed={(event, formElementId) => this.inputChangedhandler(event, formElement.id)}></Input>
+                ))
+                }
 
                 <Button btnType="Success" clicked={this.orderHandler}>ORDER</Button>
-            </form>
+            </form >
         );
         if (this.state.loading) {
             form = <Spinner />;
