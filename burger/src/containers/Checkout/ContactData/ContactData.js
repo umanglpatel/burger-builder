@@ -8,7 +8,7 @@ import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/Input/Input';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import * as orderActions from '../../../store/actions/index';
-import { updateObject } from '../../../shared/utility';
+import { updateObject, checkValidity } from '../../../shared/utility';
 
 class ContactData extends Component {
 
@@ -112,30 +112,11 @@ class ContactData extends Component {
         this.props.onOrderBurger(order, this.props.token);
     }
 
-    checkValidity(value, rules) {
-        let isValid = true;
-        // setting empty valition object in element work fine
-        // no need check below if for validation not required fields. choose either approach
-        if (!rules) {
-            return true;
-        }
-        if (rules.required) {
-            isValid = value.trim() !== '' && isValid;
-        }
-        if (rules.minLength) {
-            isValid = value.length >= rules.minLength && isValid;
-        }
-        if (rules.maxLength) {
-            isValid = value.length <= rules.maxLength && isValid;
-        }
-        return isValid;
-    }
-
     inputChangedhandler = (event, formElementId) => {
 
         const updatedElement = updateObject(this.state.orderForm[formElementId], {
             value: event.target.value,
-            valid: this.checkValidity(event.target.value, this.state.orderForm[formElementId].validation),
+            valid: checkValidity(event.target.value, this.state.orderForm[formElementId].validation),
             touched: true
         });
         const updatedOrderForm = updateObject(this.state.orderForm, {
